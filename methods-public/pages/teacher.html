@@ -1,0 +1,175 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link rel="stylesheet" href="../styles/teacher.css" type="text/css">
+    <title>Teacher</title>
+</head>
+<body>
+    <div class="card">
+        <h1 class="main-name">Welcome back, Dr. Smith</h1>
+        <p>Your attendence dashboard is ready</p>
+        <div class="logout-btn">
+            <button>Logout</button>
+        </div>
+        
+    </div>
+    <div class="card menu-card">
+        <nav>
+            <button class="teach-menu-btn side-menu-btn clicked" data-target="card1">My Courses</button>
+            <button class="teach-menu-btn" data-target="card2">Requests</button>
+            <button class="teach-menu-btn" data-target="card3">Attendence Analytics</button>
+        </nav>
+    </div>
+    <!--<div class="general-info">
+        <div class="card size-card">
+            <h1>5</h1>
+            <h3>Subjects</h3>
+        </div>
+        <div class="card size-card">
+            <h1>12</h1>
+            <h3>Today's Session</h3>
+        </div>
+        <div class="card size-card">
+            <h1>200</h1>
+            <h3>Total Students</h3>
+        </div>
+        <div class="card size-card">
+            <h1>0</h1>
+            <h3>Active sessions</h3>
+        </div>
+    </div>-->
+    <div id="addSubjectModal" class="modal">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h3 class="modal-title" id="form-title">Add New Subject</h3>
+                <button class="close-btn" onclick="closeModal('addSubjectModal')">&times;</button>
+            </div>
+            <form id="addSubjectForm" action="/addSubject" method="post">
+                <div class="form-group">
+                    <label for="subjectName">Subject Name</label>
+                    <input type="text" name="subjectName" id="subjectName" class="form-input" placeholder="e.g., Mathematics" required>
+                </div>
+                <div class="form-group">
+                    <label for="subjectCode">Subject Code</label>
+                    <input type="text" name="subjectCode" id="subjectCode" class="form-input" placeholder="e.g., MATH101" required>
+                </div>
+                <div class="form-row">
+                    <div class="form-group">
+                        <label for="semester">Year</label>
+                        <select id="year" name="year" class="form-input" required>
+                            <option value="">Select...</option>
+                            <option value="1">1st Year</option>
+                            <option value="2">2nd Year</option>
+                            <option value="3">3rd Year</option>
+                            <option value="4">4th Year</option>
+                        </select>
+                    </div>
+                    <div class="form-group">
+                        <label for="section">Section</label>
+                        <select id="section" name="section" class="form-input" required>
+                            <option value="">Select...</option>
+                            <option value="A">A</option>
+                            <option value="B">B</option>
+                            <option value="C">C</option>
+                            <option value="D">D</option>
+                        </select>
+                    </div>
+                </div>
+                <div class="form-row">
+                    <div class="form-group">
+                        <label for="semester">Semester</label>
+                        <select id="semester" name="semester" class="form-input" required>
+                            <option value="">Select...</option>
+                            <option value="1">Semester 1</option>
+                            <option value="2">Semester 2</option>
+                            <option value="3">Semester 3</option>
+                            <option value="4">Semester 4</option>
+                            <option value="5">Semester 5</option>
+                            <option value="6">Semester 6</option>
+                            <option value="7">Semester 7</option>
+                            <option value="8">Semester 8</option>
+                        </select>
+                    </div>
+                    <div class="form-group">
+                        <label for="totalStudents">Credits</label>
+                        <input type="number" name="credits" id="credits" class="form-input" placeholder="Credits: " min="1" required>
+                    </div>
+                </div>
+                <div class="form-row">
+                    <div class="form-group">
+                        <label for="branch" >Branch</label>
+                        <select id="branch" name="branch" class="form-input" required>
+                            <option value="">Select Branch..</option>
+                            <option value="CSE">Computer Science Engineering</option>
+                            <option value="ECE">Electronics & Communication</option>
+                            <option value="ME">Mechanical Engineering</option>
+                            <option value="CE">Civil Engineering</option>
+                            <option value="EEE">Electrical & Electronics</option>
+                        </select>
+                    </div>
+                </div>
+                <button type="submit" class="btn btn-primary" id="submit-button">Add Subject</button>
+            </form>
+        </div>
+    </div>
+    <div class="card">
+        <div class="add-sub">
+            <h2>My Subjects</h2>
+            <button id="add-subject" class="add-sub-btn">
+                + Add Subjects
+            </button>
+        </div>
+        <div id="subjects-container">
+            <div class="sub-stat">
+                <div class="hd">
+                    <p class="sub">Mathematics</p>
+                    <p>
+                        MATH101 | 4th Year | 6th semester | EEE-A | 4 credits
+                    </p>
+                </div>
+                <div class="edit-btn">
+                    <button id="edit-subject" class="btn">
+                    Edit
+                    </button>
+                    <button class="btn">
+                        Delete
+                    </button>
+                </div>
+            </div>
+        </div>
+    </div>
+    <div class="card attend-start-card session-live" id="start-session">
+        <h1>Attendance Session</h1>
+        <div class="session-status status-inactive" id="sessionStatus">
+                            No active session
+        </div>
+        <form action="/professor/startSession" method="post">
+            <div class="session-from-grp">
+                <label for="session-from" class="label-align">Select Subjects</label>
+                <select name="subjectCode" id="session-form" class="checkbox session-start-form">
+                    <option value="">Choose a subject...</option>
+                </select>
+                <label for="sessionType" class="label-align">Session Type</label>
+                <select name="sessionType" id="sessionType" class="checkbox" required>
+                    <option value="lecture">Lecture</option>
+                    <option value="lab">Lab</option>
+                </select>
+                <button type="submit" class="attend-start" id="start-attendance">Start Session</button>
+            </div>
+        </form>
+    </div>
+    <div class="card attend-start-card" id="stop-session">
+        <h1>Active Session</h1>
+        <div class="session-status status-active" id="sessionStatus">
+            Active : Mathematics 
+        </div>
+        <div id="requests" class="requests">
+
+        </div>
+        <button type="submit" class="attend-start" id="stop-attendance">Stop Session</button>
+    </div>
+    <script src="../scripts/teacher.js"></script>
+</body>
+</html>

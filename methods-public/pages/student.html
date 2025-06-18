@@ -1,0 +1,50 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link rel="stylesheet" href="../styles/student.css" type="text/css">
+    <title>Students</title>
+</head>
+<body>
+    <header>
+        <div class="card">
+        <h2 id="main-name" class="main-name">Eesh Tripathi</h2>
+        <h4 id="main-info" class="main-info"></h4>
+        </div>
+    </header>
+    <div class="card menu-card">
+        <nav>
+            <button class="menu-btn side-menu-btn clicked" data-target="card1">My Courses</button>
+            <button class="menu-btn" data-target="card2">Attendance</button>
+            <button class="menu-btn" data-target="card3">Attendence Analytics</button>
+        </nav>
+    </div>
+    <div id="card3" class="card enroll-card">
+        <p>attedence analysis</p>
+    </div>
+    <div id="card1" class="card enroll-card active">
+        <h3>My Courses</h3>
+        <div class="subject-info" id="subjects-container">
+            <p class="course-code">CS301</p>
+            <h2>Computer Networks</h2>
+            <h4>Satish Kumar | 3 Credits</h4>
+        </div>
+    </div>
+    <div id="card2" class="card enroll-card">
+        <h3>Currently live session for attendance</h3>
+        <div id="active-session" class="subject-info">
+            <div class="enroll-stat">
+                <p class="course-code">CS301</p>
+                <p class="course-code">32/50 enrolled</p>
+            </div>
+            <div>
+                <h2>Computer Networks</h2>
+                <h4>Satish Kumar</h4>
+                <p>Credits: 3</p>
+            </div>
+        </div>
+    </div>
+    <script src="/scripts/student.js"></script>
+</body>
+</html>
