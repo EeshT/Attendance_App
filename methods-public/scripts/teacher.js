@@ -1,3 +1,8 @@
+/*<button class="btn btn-danger" onclick="deleteRequest(${request.request_id},${request.session_id})">
+            Delete
+          </button>*/
+
+
 // This function hides the modal by removing 'active' class
 function closeModal(id) {
   const modal = document.getElementById(id);
@@ -217,12 +222,20 @@ async function loadAttendanceRequests(sessionId) {
     }
     
     // Add bulk action buttons
+    const session_id = requests[0].session_id
     const bulkActions = document.createElement('div');
     bulkActions.className = 'bulk-actions';
     bulkActions.innerHTML = `
-      <button class="btn btn-success" onclick="markAllAttendance('present')">Mark All Present</button>
+      <button class="btn btn-success" id="mark-all-present-btn">Mark All Present</button>
+      <p> Attention: All the shown requests will be marked as present </p>
     `;
     requestsContainer.appendChild(bulkActions);
+
+    const markAllBtn = document.getElementById('mark-all-present-btn');
+    markAllBtn.addEventListener('click', () => {
+      console.log('Mark All button clicked!'); // Debug log
+      markAllAttendance('present', sessionId);
+    });
     
     // Add individual requests
     requests.forEach(request => {
@@ -237,14 +250,11 @@ async function loadAttendanceRequests(sessionId) {
           <small>Requested at: ${new Date(request.request_time).toLocaleString()}</small>
         </div>
         <div class="request-actions">
-          <button class="btn btn-success" onclick="markIndividualAttendance(${request.session_id}, ${request.student_id}, 'present')">
+          <button class="btn btn-success" onclick="markIndividualAttendance(${request.session_id}, ${request.student_id}, 'present','accepted')">
             Present
           </button>
-          <button class="btn btn-warning" onclick="markIndividualAttendance(${request.session_id}, ${request.student_id}, 'absent')">
+          <button class="btn btn-warning" onclick="markIndividualAttendance(${request.session_id}, ${request.student_id}, 'absent','rejected')">
             Absent
-          </button>
-          <button class="btn btn-danger" onclick="deleteRequest(${request.request_id})">
-            Delete
           </button>
         </div>
       `;
@@ -263,7 +273,7 @@ window.addEventListener('DOMContentLoaded', async () => {
     if (data.active) {
       document.getElementById('start-session').style.display = 'none';
       document.getElementById('stop-session').style.display = 'flex';
-      document.getElementById('sessionStatus').innerText = `Active : ${data.subject}`;
+      document.getElementById('activeSessionStatus').innerText = `Active : ${data.subject}`;
       currentSessionId = data.sessionId; // store for future use
       loadAttendanceRequests(data.sessionId);
     } else {
@@ -275,12 +285,12 @@ window.addEventListener('DOMContentLoaded', async () => {
   }
 });
 
-async function markIndividualAttendance(sessionId, studentId, status) {
+async function markIndividualAttendance(sessionId, studentId, status, requestStatus) {
   try {
     const response = await fetch('/professor/markAttendance', {
       method: 'POST',
       headers: { 'Content-Type': 'application/json' },
-      body: JSON.stringify({ sessionId, studentId, status })
+      body: JSON.stringify({ sessionId, studentId, status , requestStatus})
     });
     
     if (response.ok) {
@@ -296,4 +306,75 @@ async function markIndividualAttendance(sessionId, studentId, status) {
   }
 }
 
+/* async function deleteRequest(requestId, sessionId) {
+  const confirmed = confirm('Are you sure you want to delete this request?');
+  if (!confirmed) return;
+  
+  try {
+    const response = await fetch(`/professor/deleteRequest`, {
+      method: 'DELETE',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({ requestId})
+    });
+    
+    if (response.ok) {
+      loadAttendanceRequests(sessionId);
+    } else {
+      const error = await response.json();
+      alert(error.error || 'Failed to delete request');
+    }
+  } catch (err) {
+    console.error('Error deleting request:', err);
+    alert('Failed to delete request');
+  }
+} */
 
+async function markAllAttendance(status, sessionId) {
+  
+  const confirmed = confirm(`Mark all pending requests as ${status}?`);
+  if (!confirmed) return;
+  
+  try {
+    const response = await fetch('/professor/markAllAttendance', {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({ sessionId: sessionId, status })
+    });
+    
+    if (response.ok) {
+      const result = await response.json();
+      alert(result.message || `All students marked as ${status}`);
+      loadAttendanceRequests(sessionId);
+    } else {
+      const error = await response.json();
+      alert(error.error || 'Failed to mark all attendance');
+    }
+  } catch (err) {
+    console.error('Error marking all attendance:', err);
+    alert('Failed to mark all attendance');
+  }
+}
+
+let startAttend = document.getElementById('start-attendance');
+let stopAttend = document.getElementById('stop-attendance');
+
+function showStartSession() {
+  const startDiv = document.getElementById('start-session');
+  const stopDiv = document.getElementById('stop-session');
+  
+  startDiv.style.display = 'flex';
+  stopDiv.style.display = 'none';
+}
+
+function showActiveSession(sessionData) {
+  const startDiv = document.getElementById('start-session');
+  const stopDiv = document.getElementById('stop-session');
+  
+  startDiv.style.display = 'none';
+  stopDiv.style.display = 'flex';
+  
+  const statusDiv = stopDiv.querySelector('.session-status');
+  statusDiv.textContent = `Active: ${sessionData.subject_name} (${sessionData.session_type})`;
+  
+  loadAttendanceRequests(sessionData.session_id);
+}

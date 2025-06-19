@@ -414,7 +414,7 @@ export async function getAttendanceRequests(sessionId) {
   }
 }
 
-export const markIndividualAttendance = async (sessionId, studentId,status) => {
+export const markIndividualAttendance = async (sessionId, studentId,status,requestStatus) => {
   try{
     await pool.query(
       `INSERT INTO attendance_records
@@ -426,12 +426,75 @@ export const markIndividualAttendance = async (sessionId, studentId,status) => {
 
     await pool.query(
       `UPDATE attendance_requests
-      SET status = 'accepted'
+      SET status = ?
       WHERE session_id = ? AND student_id = ?`,
-      [sessionId, studentId]
+      [requestStatus, sessionId, studentId]
     )
   } catch(err){
     console.error('Error inserting student details in attendance records', err);
     throw err;
   }
 };
+
+/* export async function deleteAttendanceRequest(requestId) {
+  try {
+    await pool.query(`
+      DELETE FROM attendance_requests WHERE request_id = ?
+    `, [requestId]);
+
+    return { success: true };
+  } catch (err) {
+    console.error('Error deleting attendance request:', err);
+    throw err;
+  }
+} */
+
+export async function markAllAttendance(sessionId, status) {
+  try {
+    // Get all pending requests for this session
+    const [requests] = await pool.query(`
+      SELECT student_id FROM attendance_requests 
+      WHERE session_id = ? AND status = 'pending'
+    `, [sessionId]);
+
+    if (requests.length === 0) {
+      return { message: 'No pending requests to mark' };
+    }
+
+    const studentIds = requests.map(r => r.student_id);
+
+    // Insert attendance records for each student
+    for (const studentId of studentIds) {
+      try {
+        await pool.query(`
+          INSERT INTO attendance_records (session_id, student_id, attendance_status)
+          VALUES (?, ?, ?)
+        `, [sessionId, studentId, status]);
+      } catch (insertErr) {
+        // Skip if already exists (duplicate entry)
+        if (insertErr.code !== 'ER_DUP_ENTRY') {
+          throw insertErr;
+        }
+      }
+    }
+
+    // Update all requests to 'accepted' status
+    const placeholders = studentIds.map(() => '?').join(',');
+    await pool.query(`
+      UPDATE attendance_requests
+      SET status = 'accepted'
+      WHERE session_id = ? AND student_id IN (${placeholders})
+    `, [sessionId, ...studentIds]);
+
+    return { 
+      success: true, 
+      count: studentIds.length,
+      message: `Successfully marked ${studentIds.length} students as ${status}`
+    };
+
+  } catch (err) {
+    console.error('Error marking all attendance:', err);
+    throw err;
+  }
+}
+

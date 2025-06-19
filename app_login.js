@@ -2,7 +2,7 @@ import express from 'express';
 import path from 'path';
 import session from 'express-session';
 import bcrypt from 'bcrypt';
-import { logStudentDetails, logProfessorDetails, checkLoginDetails, getStudentInfo, addNewSubject, updateSubjectDetails, deleteSubjectAndMapping, getStudentSubjectInfo, startAttendanceSession ,getActiveSessionForStudent, requestStudentAttendance, checkActiveSession, getAttendanceRequests, markIndividualAttendance} from './database.js';
+import { logStudentDetails, logProfessorDetails, checkLoginDetails, getStudentInfo, addNewSubject, updateSubjectDetails, deleteSubjectAndMapping, getStudentSubjectInfo, startAttendanceSession ,getActiveSessionForStudent, requestStudentAttendance, checkActiveSession, getAttendanceRequests, markIndividualAttendance, /* deleteAttendanceRequest, */ markAllAttendance} from './database.js';
 import { fileURLToPath } from 'url';
 import { dirname } from 'path';
 
@@ -241,8 +241,8 @@ app.get('/professor/attendanceRequests/:sessionId', requireLogin('professor'), a
 
 app.post('/professor/markAttendance', requireLogin('professor'), async (req, res) => {
   try {
-    const { sessionId, studentId, status = 'present' } = req.body;
-    await markIndividualAttendance(sessionId, studentId, status);
+    const { sessionId, studentId, status, requestStatus } = req.body;
+    await markIndividualAttendance(sessionId, studentId, status, requestStatus);
     res.json({ message: 'Attendance marked successfully' });
   } catch (err) {
     console.error(err);
@@ -251,6 +251,29 @@ app.post('/professor/markAttendance', requireLogin('professor'), async (req, res
     } else {
       res.status(500).json({ error: 'Failed to mark attendance' });
     }
+  }
+});
+
+
+/* app.delete('/professor/deleteRequest', requireLogin('professor'), async (req, res) => {
+  try {
+    const { requestId } = req.body;
+    await deleteAttendanceRequest(requestId);
+    res.json({ message: 'Request deleted successfully' });
+  } catch (err) {
+    console.error(err);
+    res.status(500).json({ error: 'Failed to delete request' });
+  }
+}); */
+
+app.post('/professor/markAllAttendance', requireLogin('professor'), async (req, res) => {
+  try {
+    const { sessionId, status } = req.body;
+    const result = await markAllAttendance(sessionId, status);
+    res.json(result);
+  } catch (err) {
+    console.error(err);
+    res.status(500).json({ error: 'Failed to mark all attendance' });
   }
 });
 
