@@ -1,4 +1,5 @@
-console.log('Student JS loaded');
+
+
 let menu_btn = document.querySelectorAll('.menu-btn')
 let card_content = document.querySelectorAll('.enroll-card')
 menu_btn.forEach(btn => {
@@ -137,5 +138,22 @@ async function requestAttendance(sessionId) {
   alert(result.message);
 }
 
+const logoutBtn = document.getElementById('logout-btn') 
+logoutBtn.addEventListener('click',async () => {
+  try {
+      const response = await fetch('/logout', {
+        method: 'POST',
+        credentials: 'include'
+      });
 
+      if (response.redirected) {
+        window.location.href = response.url;
+      } else {
+        window.location.href = '/login'; 
+      }
+    } catch (error) {
+      console.error('Logout failed:', error);
+      alert('Error logging out. Please try again.');
+    }
+})
 

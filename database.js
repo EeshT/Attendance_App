@@ -498,3 +498,48 @@ export async function markAllAttendance(sessionId, status) {
   }
 }
 
+export async function stopAttendanceSession(sessionId) {
+  const conn = await pool.getConnection();
+  try {
+    await conn.beginTransaction();
+
+    await conn.query(`
+    INSERT INTO attendance_records (session_id, student_id, attendance_status)
+    SELECT ?, s.student_id, 'absent'
+    FROM students s
+    JOIN professor_subjects ps ON s.branch_id = ps.branch_id 
+      AND s.year = ps.year 
+      AND s.section = ps.section
+    JOIN attendance_sessions ats ON ps.mapping_id = ats.mapping_id
+    LEFT JOIN attendance_requests ar ON s.student_id = ar.student_id 
+      AND ar.session_id = ats.session_id
+    LEFT JOIN attendance_records existing_ar ON s.student_id = existing_ar.student_id 
+      AND existing_ar.session_id = ats.session_id
+    WHERE ats.session_id = ? 
+      AND (ar.status IS NULL OR ar.status = 'pending')
+      AND existing_ar.student_id IS NULL  -- Ensure no existing attendance record
+    ON DUPLICATE KEY UPDATE attendance_status = 'absent'
+    `, [sessionId, sessionId]);
+
+    await conn.query(`
+      DELETE FROM attendance_requests
+      WHERE session_id = ?
+    `, [sessionId]);
+
+    await conn.query(`
+      UPDATE attendance_sessions
+      SET session_status = 'completed'
+      WHERE session_id = ?
+    `, [sessionId]);
+
+    await conn.commit();
+    return { success: true };
+  } catch (err) {
+    await conn.rollback();
+    console.error('Error stopping session:', err);
+    throw err;
+  } finally {
+    conn.release();
+  }
+}
+

@@ -24,7 +24,7 @@ body {
     color: rgb(101, 100, 100);
     text-indent: 1rem;
 }
-.menu-btn {
+.menu-btn, .logout-btn {
     text-decoration: none;
     border: none;
     font-size: large;

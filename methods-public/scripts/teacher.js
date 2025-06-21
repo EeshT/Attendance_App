@@ -1,8 +1,31 @@
-/*<button class="btn btn-danger" onclick="deleteRequest(${request.request_id},${request.session_id})">
-            Delete
-          </button>*/
 
+// functionality to hover between various pages
+const menu_btn = document.querySelectorAll(".teach-menu-btn")
+const page_content = document.querySelectorAll(".card-content")
 
+document.addEventListener('click', (e) => {
+  if (e.target.classList.contains('teach-menu-btn')) {
+    const btn = e.target;
+    const targetId = btn.getAttribute('data-target');
+    
+    if (targetId) {
+      document.querySelectorAll('.teach-menu-btn').forEach(b => 
+        b.classList.remove('clicked')
+      );
+      
+      btn.classList.add('clicked');
+      
+      document.querySelectorAll('.card-content').forEach(card => 
+        card.classList.remove('active')
+      );
+      
+      const targetCard = document.getElementById(targetId);
+      if (targetCard) {
+        targetCard.classList.add('active');
+      }
+    }
+  }
+});
 // This function hides the modal by removing 'active' class
 function closeModal(id) {
   const modal = document.getElementById(id);
@@ -24,7 +47,6 @@ function openModal(id) {
   }
 }
 
-// Wait for DOM to be fully loaded
 document.addEventListener('DOMContentLoaded', () => {
   // Get the add subject button and modal
   const addSubjectBtn = document.getElementById('add-subject');
@@ -189,24 +211,6 @@ document.addEventListener('click', function (e) {
   }
 });
 
-/* let startAttend = document.getElementById('start-attendance')
-let stopAttend = document.getElementById('stop-attendance')
-let startDiv = document.getElementById('start-session')
-let stopDiv = document.getElementById('stop-session')
-
-startAttend.addEventListener('click', (e)=> {
-  e.preventDefault()
-    startDiv.classList.remove('session-live')
-    stopDiv.classList.add('session-live')
-})
-
-stopAttend.addEventListener('click', (e)=> {
-  e.preventDefault()
-    stopDiv.classList.remove('session-live')
-    startDiv.classList.add('session-live')
-}) */
-
-///bhasad
 
 async function loadAttendanceRequests(sessionId) {
   try {
@@ -306,29 +310,6 @@ async function markIndividualAttendance(sessionId, studentId, status, requestSta
   }
 }
 
-/* async function deleteRequest(requestId, sessionId) {
-  const confirmed = confirm('Are you sure you want to delete this request?');
-  if (!confirmed) return;
-  
-  try {
-    const response = await fetch(`/professor/deleteRequest`, {
-      method: 'DELETE',
-      headers: { 'Content-Type': 'application/json' },
-      body: JSON.stringify({ requestId})
-    });
-    
-    if (response.ok) {
-      loadAttendanceRequests(sessionId);
-    } else {
-      const error = await response.json();
-      alert(error.error || 'Failed to delete request');
-    }
-  } catch (err) {
-    console.error('Error deleting request:', err);
-    alert('Failed to delete request');
-  }
-} */
-
 async function markAllAttendance(status, sessionId) {
   
   const confirmed = confirm(`Mark all pending requests as ${status}?`);
@@ -378,3 +359,56 @@ function showActiveSession(sessionData) {
   
   loadAttendanceRequests(sessionData.session_id);
 }
+
+async function stopAttendanceSession (sessionId) {
+  const confirmed = confirm('Are you sure you want to stop the current session?');
+  if (!confirmed) return;
+  
+  try {
+    const response = await fetch('/professor/stopSession', {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({ sessionId: sessionId })
+    });
+    
+    if (response.ok) {
+      showStartSession();
+      alert('Session stopped successfully');
+    } else {
+      const error = await response.json();
+      alert(error.error || 'Failed to stop session');
+    }
+  } catch (err) {
+    console.error('Error stopping session:', err);
+    alert('Failed to stop session');
+  }
+}
+
+stopAttend.addEventListener('click',async ()=> {
+  const res = await fetch('/professor/checkSession');
+  const data = await res.json();
+  if (data.active) {
+    stopAttendanceSession(data.sessionId);
+  }
+
+})
+
+const logoutBtn = document.getElementById('logout-btn') 
+logoutBtn.addEventListener('click',async () => {
+  try {
+      const response = await fetch('/logout', {
+        method: 'POST',
+        credentials: 'include'
+      });
+
+      if (response.redirected) {
+        window.location.href = response.url;
+      } else {
+        window.location.href = '/login'; 
+      }
+    } catch (error) {
+      console.error('Logout failed:', error);
+      alert('Error logging out. Please try again.');
+    }
+})
+

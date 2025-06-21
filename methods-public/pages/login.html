@@ -28,6 +28,7 @@
         <div class="form-container">
             <!-- Login Form -->
             <form class="form active" id="loginForm" action="/login" method="post">
+                <input type="hidden" name="userType" id="loginUserTypeField" value="student">
                 <div class="form-group">
                     <label for="loginUsername">Username <span class="required">*</span></label>
                     <input type="text" id="loginUsername" name="username" required>

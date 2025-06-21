@@ -55,6 +55,12 @@ button {
     transform: translateY(-2px);
     box-shadow: 0 4px 15px rgba(102, 126, 234, 0.4);
 }
+.card-content{
+    display: none;
+}
+.card-content.active{
+    display: block;
+}
 .logout-btn {
     display: flex;
     justify-content: center;
