@@ -23,7 +23,10 @@
         </nav>
     </div>
     <div id="card3" class="card enroll-card">
-        <p>attedence analysis</p>
+        <div class="chart-container">
+            <h2>Attendance bar-graph</h2>
+            <canvas id="myChart" class="chart-box"></canvas>
+        </div>
     </div>
     <div id="card1" class="card enroll-card active">
         <h3>My Courses</h3>
@@ -48,5 +51,8 @@
         </div>
     </div>
     <script src="/scripts/student.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/chartjs-plugin-annotation@3.0.1/dist/chartjs-plugin-annotation.min.js"></script>
+    <script src="../scripts/student_chart.js"></script>
 </body>
 </html>

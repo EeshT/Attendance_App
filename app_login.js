@@ -5,7 +5,7 @@ import bcrypt from 'bcrypt';
 import nocache from 'nocache';
 import passport from 'passport';
 import { Strategy as LocalStrategy } from 'passport-local';
-import { logStudentDetails, logProfessorDetails, checkLoginDetails, getStudentInfo, addNewSubject, updateSubjectDetails, deleteSubjectAndMapping, getStudentSubjectInfo, startAttendanceSession ,getActiveSessionForStudent, requestStudentAttendance, checkActiveSession, getAttendanceRequests, markIndividualAttendance, markAllAttendance, stopAttendanceSession} from './database.js';
+import { logStudentDetails, logProfessorDetails, checkLoginDetails, getStudentInfo, addNewSubject, updateSubjectDetails, deleteSubjectAndMapping, getStudentSubjectInfo, startAttendanceSession ,getActiveSessionForStudent, requestStudentAttendance, checkActiveSession, getAttendanceRequests, markIndividualAttendance, markAllAttendance, stopAttendanceSession, getStudentAttendanceSummary} from './database.js';
 import { fileURLToPath } from 'url';
 import { dirname } from 'path';
 
@@ -368,6 +368,19 @@ app.post('/professor/stopSession', requireLogin('professor'), async (req, res) =
   } catch (err) {
     console.error(err);
     res.status(500).json({ error: 'Failed to stop session' });
+  }
+});
+
+
+app.get('/student/attendance-summary-percentage', requireLogin('student'), async (req, res) => {
+  try {
+    const username = req.session.username;
+
+    const summary = await getStudentAttendanceSummary(username); 
+    res.json(summary);
+  } catch (err) {
+    console.error(err);
+    res.status(500).json({ error: 'Failed to fetch attendance summary' });
   }
 });
 

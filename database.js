@@ -543,3 +543,33 @@ export async function stopAttendanceSession(sessionId) {
   }
 }
 
+export async function getStudentAttendanceSummary(username) {
+  const [rows] = await pool.query(
+    `SELECT s.student_id
+     FROM students s
+     JOIN users u ON s.user_id = u.user_id
+     WHERE u.username = ?`, [username]
+  );
+
+  if (!rows || rows.length === 0) return [];
+
+  const studentId = rows[0].student_id;
+
+  const [attendanceRows] = await pool.query(
+    `SELECT sub.subject_name,
+            SUM(CASE WHEN ar.attendance_status = 'present' THEN 1 ELSE 0 END) AS total_attended,
+            COUNT(DISTINCT a.session_id) AS total_sessions
+     FROM attendance_records ar
+     JOIN attendance_sessions a ON ar.session_id = a.session_id
+     JOIN professor_subjects ps ON a.mapping_id = ps.mapping_id
+     JOIN subjects sub ON ps.subject_id = sub.subject_id
+     WHERE ar.student_id = ? AND a.session_status = 'completed'
+     GROUP BY sub.subject_name`, [studentId]
+  );
+
+  return attendanceRows.map(row => ({
+    subject: row.subject_name,
+    attended: row.total_attended,
+    total: row.total_sessions
+  }));
+}
