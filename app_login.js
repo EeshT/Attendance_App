@@ -3,7 +3,7 @@ import path from 'path';
 import session from 'express-session';
 import bcrypt from 'bcrypt';
 import nocache from 'nocache';
-import { logStudentDetails, logProfessorDetails, checkLoginDetails, getStudentInfo, addNewSubject, updateSubjectDetails, deleteSubjectAndMapping, getProfessorName, getStudentSubjectInfo, startAttendanceSession ,getActiveSessionForStudent, requestStudentAttendance, checkActiveSession, getAttendanceRequests, markIndividualAttendance, markAllAttendance, stopAttendanceSession, getStudentAttendanceSummary} from './database.js';
+import { logStudentDetails, logProfessorDetails, checkLoginDetails, getStudentInfo, addNewSubject, updateSubjectDetails, deleteSubjectAndMapping, getProfessorName, getStudentSubjectInfo, startAttendanceSession, getSessionStats, getActiveSessionForStudent, requestStudentAttendance, checkActiveSession, getAttendanceRequests, markIndividualAttendance, markAllAttendance, stopAttendanceSession, getStudentAttendanceSummary} from './database.js';
 import { fileURLToPath } from 'url';
 import { dirname } from 'path';
 
@@ -341,6 +341,19 @@ app.get('/professor/attendanceRequests/:sessionId', requireLogin('professor'), a
     res.status(500).json({ error: 'Failed to fetch attendance requests' });
   }
 });
+
+app.get('/professor/sessionStats/:sessionId', requireLogin('professor'), async (req, res) => {
+  const sessionId = req.params.sessionId;
+
+  try {
+    const stats = await getSessionStats(sessionId);
+    res.status(200).json(stats);
+  } catch (err) {
+    console.error('Failed to get session stats:', err);
+    res.status(500).json({ error: 'Internal server error' });
+  }
+});
+
 
 app.post('/professor/markAttendance', requireLogin('professor'), async (req, res) => {
   try {

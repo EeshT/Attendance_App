@@ -225,6 +225,8 @@ document.addEventListener('click', function (e) {
 async function loadAttendanceRequests(sessionId) {
   try {
     const response = await fetch(`/professor/attendanceRequests/${sessionId}`);
+    const statResponse = await fetch(`/professor/sessionStats/${sessionId}`)
+    const stats = await statResponse.json();
     const requests = await response.json();
     
     const requestsContainer = document.getElementById('requests');
@@ -241,6 +243,8 @@ async function loadAttendanceRequests(sessionId) {
     bulkActions.className = 'bulk-actions';
     bulkActions.innerHTML = `
       <button class="btn btn-success dynamic-btn" id="mark-all-present-btn">Mark All Present</button>
+      <p> Total Requests: ${stats.total}</p>
+      <p> Marked as present: ${stats.present}</p>
       <p> Attention: All the shown requests will be marked as present </p>
     `;
     requestsContainer.appendChild(bulkActions);

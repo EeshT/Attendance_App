@@ -277,3 +277,59 @@ button {
 .attend-start{
     margin-top: 20px;
 }
+
+@media screen and (max-width: 768px) {
+  .sub-stat {
+    flex-direction: column;
+    align-items: flex-start;
+    gap: 1rem;
+    padding: 1rem;
+  }
+
+  .edit-btn {
+    flex-direction: column;
+    align-items: stretch;
+    gap: 0.5rem;
+    width: 100%;
+  }
+
+  .btn {
+    width: 100%;
+    margin: 0;
+  }
+
+  .add-sub {
+    flex-direction: column;
+    align-items: center;
+    gap: 1rem;
+    text-align: center;
+  }
+
+  h2 {
+    font-size: 1.5rem;
+    margin-left: 0;
+  }
+
+  .main-name {
+    font-size: 2rem;
+    padding: 0 1rem;
+  }
+
+  .form-row {
+    grid-template-columns: 1fr; /* stack form fields vertically */
+  }
+
+  .session-from-grp select,
+  .attend-start {
+    margin: 0.5rem 2vw;
+  }
+
+  .session-status {
+    margin: 0.5rem 2vw;
+  }
+
+  .checkbox, .attend-start {
+    font-size: 1rem;
+    padding: 0.75rem;
+  }
+}

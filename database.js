@@ -414,6 +414,26 @@ export async function getAttendanceRequests(sessionId) {
   }
 }
 
+export async function getSessionStats(sessionId) {
+  try {
+    const [[{ total }]] = await pool.query(
+      `SELECT COUNT(*) AS total FROM attendance_requests WHERE session_id = ?`,
+      [sessionId]
+    );
+
+    const [[{ present }]] = await pool.query(
+      `SELECT COUNT(*) AS present FROM attendance_requests WHERE session_id = ? AND status = 'accepted'`,
+      [sessionId]
+    );
+
+    return { total, present };
+  } catch (err) {
+    console.error('Error in getSessionStats:', err);
+    throw err;
+  }
+}
+
+
 export const markIndividualAttendance = async (sessionId, studentId,status,requestStatus) => {
   try{
     await pool.query(
