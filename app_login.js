@@ -3,9 +3,7 @@ import path from 'path';
 import session from 'express-session';
 import bcrypt from 'bcrypt';
 import nocache from 'nocache';
-import passport from 'passport';
-import { Strategy as LocalStrategy } from 'passport-local';
-import { logStudentDetails, logProfessorDetails, checkLoginDetails, getStudentInfo, addNewSubject, updateSubjectDetails, deleteSubjectAndMapping, getStudentSubjectInfo, startAttendanceSession ,getActiveSessionForStudent, requestStudentAttendance, checkActiveSession, getAttendanceRequests, markIndividualAttendance, markAllAttendance, stopAttendanceSession, getStudentAttendanceSummary} from './database.js';
+import { logStudentDetails, logProfessorDetails, checkLoginDetails, getStudentInfo, addNewSubject, updateSubjectDetails, deleteSubjectAndMapping, getProfessorName, getStudentSubjectInfo, startAttendanceSession ,getActiveSessionForStudent, requestStudentAttendance, checkActiveSession, getAttendanceRequests, markIndividualAttendance, markAllAttendance, stopAttendanceSession, getStudentAttendanceSummary} from './database.js';
 import { fileURLToPath } from 'url';
 import { dirname } from 'path';
 
@@ -265,6 +263,17 @@ app.post('/deleteSubject', async (req, res) => {
   }
 });
 
+app.get('/professor/name', requireLogin('professor'), async (req, res) => {
+  try {
+    const username = req.session.username;
+
+    const name = await getProfessorName(username);
+    res.status(200).json({profName: name})
+  } catch (err) {
+    console.error(err);
+    res.status(500).send('Error starting attendance session');
+  }
+})
 app.post('/professor/startSession', requireLogin('professor'), async (req, res) => {
   try {
     const { subjectCode, sessionType } = req.body;

@@ -12,7 +12,7 @@
         <h1 class="main-name">Welcome back, Dr. Smith</h1>
         <p>Your attendence dashboard is ready</p>
         <div class="logout-btn" id="logout-btn">
-            <button>Logout</button>
+            <button class="dynamic-btn">Logout</button>
         </div>
         
     </div>
@@ -93,7 +93,7 @@
                         </select>
                     </div>
                 </div>
-                <button type="submit" class="btn btn-primary" id="submit-button">Add Subject</button>
+                <button type="submit" class="btn btn-primary dynamic-btn" id="submit-button">Add Subject</button>
             </form>
         </div>
     </div>
@@ -103,7 +103,7 @@
     <div class="card card-content" id="card2">
         <div class="add-sub">
             <h2>My Subjects</h2>
-            <button id="add-subject" class="add-sub-btn">
+            <button id="add-subject" class="add-sub-btn dynamic-btn">
                 + Add Subjects
             </button>
         </div>
@@ -136,14 +136,13 @@
                 <div class="session-from-grp">
                     <label for="session-from" class="label-align">Select Subjects</label>
                     <select name="subjectCode" id="session-form" class="checkbox session-start-form">
-                        <option value="">Choose a subject...</option>
                     </select>
                     <label for="sessionType" class="label-align">Session Type</label>
                     <select name="sessionType" id="sessionType" class="checkbox" required>
                         <option value="lecture">Lecture</option>
                         <option value="lab">Lab</option>
                     </select>
-                    <button type="submit" class="attend-start" id="start-attendance">Start Session</button>
+                    <button type="submit" class="attend-start dynamic-btn" id="start-attendance">Start Session</button>
                 </div>
             </form>
         </div>
@@ -155,7 +154,7 @@
             <div id="requests" class="requests">
 
             </div>
-            <button type="submit" class="attend-start" id="stop-attendance">Stop Session</button>
+            <button type="submit" class="attend-start dynamic-btn" id="stop-attendance">Stop Session</button>
         </div>
     </div>
     <script src="../scripts/teacher.js"></script>

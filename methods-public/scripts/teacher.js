@@ -128,6 +128,16 @@ document.addEventListener('DOMContentLoaded', () => {
 
 window.onload = async () => {
   try {
+    const profNameRes = await fetch('/professor/name')
+    if (!profNameRes.ok) throw new Error('Unable to load the name');
+    const nameData = await profNameRes.json();
+
+    const mainNameElement = document.querySelector('.main-name');
+    if (mainNameElement && nameData.profName) {
+      mainNameElement.innerText = `Welcome back, Prof. ${nameData.profName}`;
+    }
+
+
     const res = await fetch('/professor/subjects');
     if (!res.ok) throw new Error('Unable to load subjects');
     const subjects = await res.json();
@@ -144,7 +154,7 @@ window.onload = async () => {
 
     subjects.forEach(sub => {
       const div = document.createElement('div');
-      div.className = 'sub-stat';
+      div.className = 'sub-stat dynamic-btn';
       div.innerHTML = `
         <div class="hd">
             <p class="sub">${sub.subject_name}</p>
@@ -155,7 +165,7 @@ window.onload = async () => {
         </div>
         <div class="edit-btn">
             <button 
-            class="btn edit-subject"
+            class="btn edit-subject dynamic-btn"
             data-name="${sub.subject_name}"
             data-code="${sub.subject_code}"
             data-year="${sub.year}"
@@ -164,7 +174,7 @@ window.onload = async () => {
             data-branch="${sub.branch_code}"
             data-credits="${sub.credits}"
             >Edit</button>
-            <button class="btn delete-subject" data-code="${sub.subject_code}">Delete</button>
+            <button class="btn delete-subject dynamic-btn" data-code="${sub.subject_code}">Delete</button>
         </div>
       `;
       subjectContainer.appendChild(div);
@@ -230,7 +240,7 @@ async function loadAttendanceRequests(sessionId) {
     const bulkActions = document.createElement('div');
     bulkActions.className = 'bulk-actions';
     bulkActions.innerHTML = `
-      <button class="btn btn-success" id="mark-all-present-btn">Mark All Present</button>
+      <button class="btn btn-success dynamic-btn" id="mark-all-present-btn">Mark All Present</button>
       <p> Attention: All the shown requests will be marked as present </p>
     `;
     requestsContainer.appendChild(bulkActions);
@@ -244,7 +254,7 @@ async function loadAttendanceRequests(sessionId) {
     // Add individual requests
     requests.forEach(request => {
       const requestDiv = document.createElement('div');
-      requestDiv.className = 'sub-stat attendance-request';
+      requestDiv.className = 'sub-stat attendance-request dynamic-btn';
       requestDiv.innerHTML = `
         <div class="student-info">
           <strong>${request.student_name}</strong> (${request.roll_number})
@@ -254,10 +264,10 @@ async function loadAttendanceRequests(sessionId) {
           <small>Requested at: ${new Date(request.request_time).toLocaleString()}</small>
         </div>
         <div class="request-actions">
-          <button class="btn btn-success" onclick="markIndividualAttendance(${request.session_id}, ${request.student_id}, 'present','accepted')">
+          <button class="btn btn-success dynamic-btn" onclick="markIndividualAttendance(${request.session_id}, ${request.student_id}, 'present','accepted')">
             Present
           </button>
-          <button class="btn btn-warning" onclick="markIndividualAttendance(${request.session_id}, ${request.student_id}, 'absent','rejected')">
+          <button class="btn btn-warning dynamic-btn" onclick="markIndividualAttendance(${request.session_id}, ${request.student_id}, 'absent','rejected')">
             Absent
           </button>
         </div>

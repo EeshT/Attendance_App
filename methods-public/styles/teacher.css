@@ -55,6 +55,13 @@ button {
     transform: translateY(-2px);
     box-shadow: 0 4px 15px rgba(102, 126, 234, 0.4);
 }
+.dynamic-btn{
+    transition: all 0.3s ease;
+}
+.dynamic-btn:hover{
+    transform: translateY(-2px);
+    box-shadow: 0 4px 15px rgba(102, 126, 234, 0.4);
+}
 .card-content{
     display: none;
 }
@@ -266,4 +273,7 @@ button {
     margin-bottom: 3rem;
 }.session-live{
     display: flex;
+}
+.attend-start{
+    margin-top: 20px;
 }

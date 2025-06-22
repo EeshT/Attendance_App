@@ -436,18 +436,6 @@ export const markIndividualAttendance = async (sessionId, studentId,status,reque
   }
 };
 
-/* export async function deleteAttendanceRequest(requestId) {
-  try {
-    await pool.query(`
-      DELETE FROM attendance_requests WHERE request_id = ?
-    `, [requestId]);
-
-    return { success: true };
-  } catch (err) {
-    console.error('Error deleting attendance request:', err);
-    throw err;
-  }
-} */
 
 export async function markAllAttendance(sessionId, status) {
   try {
@@ -572,4 +560,20 @@ export async function getStudentAttendanceSummary(username) {
     attended: row.total_attended,
     total: row.total_sessions
   }));
+}
+
+
+export async function getProfessorName(username){
+  try{
+    const [rows] = await pool.query(
+      `SELECT professor_name FROM professors p
+       JOIN users u ON p.user_id = u.user_id
+       WHERE username = ?
+      `, [username]
+    )
+    return rows[0]?.professor_name;
+  } catch(err){
+    console.log("error fetching professor name", err)
+  }
+
 }

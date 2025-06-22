@@ -71,7 +71,7 @@ window.onload = async () => {
 
     subjects.forEach(sub => {
       const div = document.createElement('div');
-      div.className = 'subject';
+      div.className = 'subject-info';
       div.innerHTML = `
         <p class="course-code">${sub.subject_code}</p>
         <h2>${sub.subject_name}</h2>
@@ -114,7 +114,7 @@ window.onload = async () => {
                 <div>
                     <p>Credits: ${sess.credits} |  Lesson Type: ${sess.session_type} |  Time: ${sess.session_time}</p>
                 </div>
-                <button onclick="requestAttendance('${sess.session_id}')" id="request-btn" class="course-code">Request Attendance</button>
+                <button onclick="requestAttendance('${sess.session_id}')" id="request-btn" class="course-code request-btn">Request Attendance</button>
             </div>
         `;
         activeSessionContainer.appendChild(div);
