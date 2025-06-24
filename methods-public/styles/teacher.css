@@ -1,6 +1,6 @@
 body {
     font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
-    background:  radial-gradient(circle,rgba(14, 84, 171, 1) 0%, rgba(0, 119, 255, 1) 100%, rgba(237, 221, 83, 1) 52%);
+    background:  rgba(14, 84, 171, 1) ;
 }
 .card {
     background: whitesmoke;
@@ -28,8 +28,10 @@ p {
 button {
     padding: 1rem;
     border-radius: 10px;
-    background: rgb(255, 85, 0);
-    color: whitesmoke;
+    background: rgb(243, 123, 63);
+    color: black;
+    font-size: 1rem;
+    font-weight: 600;
 }
 .teach-menu-btn {
     text-decoration: none;
@@ -121,8 +123,10 @@ button {
     padding-top: 1rem;
     padding-bottom: 1rem;
     border-radius: 10px;
-    background: rgb(255, 85, 0);
-    color: whitesmoke;
+    background: rgb(243, 123, 63);
+    color: black;
+    font-size: 1rem;
+    font-weight: 600;
     margin: 2rem;
     margin-right: 0.5rem;
 }

@@ -1,6 +1,6 @@
 body {
     font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
-    background:  radial-gradient(circle,rgba(14, 84, 171, 1) 0%, rgba(0, 119, 255, 1) 100%, rgba(237, 221, 83, 1) 52%);
+    background:  rgba(14, 84, 171, 1);
 }
 .card {
     background: whitesmoke;
@@ -17,7 +17,7 @@ body {
 .main-name {
     text-indent: 1rem;
     font-size: xx-large;
-    color: rgba(0, 119, 255, 1);
+    color: rgba(14, 84, 171, 1);
 }
 
 .main-info {
@@ -27,8 +27,11 @@ body {
 }
 .menu-btn, .logout-btn {
     text-decoration: none;
+    background: rgb(243, 123, 63);
+    color: black;
+    font-size: 1rem;
+    font-weight: 600;
     border: none;
-    font-size: large;
     padding: 1rem;
     margin: 1rem; 
     margin-top: 0.5rem;
@@ -41,6 +44,7 @@ body {
     margin-left: 0.2rem;
 }
 .request-btn{
+    background: rgb(243, 123, 63);
     transition: all 0.3s ease;
 }
 .request-btn:hover{
@@ -48,12 +52,12 @@ body {
     box-shadow: 0 4px 15px rgba(102, 126, 234, 0.4);
 }
 .menu-btn:hover, .logout-btn:hover {
-    background: rgb(222, 218, 218);
+    background: rgb(243, 123, 63);
     transform: translateY(-2px);
     box-shadow: 0 4px 15px rgba(102, 126, 234, 0.4);
 }
 .clicked{
-    background: rgb(222, 218, 218);
+    background: rgb(243, 123, 63);
     transform: translateY(-2px);
     box-shadow: 0 4px 15px rgba(102, 126, 234, 0.4);
 }
@@ -121,7 +125,7 @@ h3 {
   
 }
 .course-code {
-    background: rgba(0, 119, 255, 1);
+    background: rgba(14, 84, 171, 1);
     color: white;
     border-radius: 10px;
     padding: 10px;

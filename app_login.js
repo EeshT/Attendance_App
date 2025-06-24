@@ -16,7 +16,8 @@ app.use(session({
   cookie: {
     maxAge: 24 * 60 * 60 * 1000,  // 1 day
     secure: process.env.NODE_ENV === 'production', // HTTPS in production
-    httpOnly: true
+    httpOnly: true,
+    sameSite: 'strict'
   }
 }));
 app.use(nocache());
@@ -407,7 +408,7 @@ app.get('/student/attendance-summary-percentage', requireLogin('student'), async
 });
 
 
-app.listen(8000, () => {
-  console.log('Server listening on http://localhost:8000');
+app.listen(3000, () => {
+  console.log('Server listening on http://localhost:3000');
 });
 

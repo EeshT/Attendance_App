@@ -6,7 +6,7 @@
 
 body {
     font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
-    background: radial-gradient(circle,rgba(14, 84, 171, 1) 0%, rgba(0, 119, 255, 1) 100%, rgba(237, 221, 83, 1) 52%);
+    background: rgba(14, 84, 171, 1);
     min-height: 100vh;
     display: flex;
     align-items: center;
@@ -71,8 +71,10 @@ body {
 }
 
 .user-type-btn.active {
-    background: rgba(0, 119, 255, 1);
-    color: white;
+    background: rgb(243, 123, 63);
+    color: black;
+    font-size: 1rem;
+    font-weight: 600;
     box-shadow: 0 4px 15px rgba(102, 126, 234, 0.4);
 }
 
@@ -100,8 +102,10 @@ body {
 }
 
 .toggle-btn.active {
-    background: #667eea;
-    color: white;
+    background: #f37b3f;
+    font-size: 1rem;
+    font-weight: 600;
+    color: black;
 }
 
 .form-container {
@@ -171,12 +175,12 @@ body {
 .submit-btn {
     width: 100%;
     padding: 14px;
-    background: rgba(0, 119, 255, 1);
-    color: white;
+    background: rgb(243, 123, 63);
+    font-size: 1rem;
+    font-weight: 600;
+    color: black;
     border: none;
     border-radius: 10px;
-    font-size: 16px;
-    font-weight: 600;
     cursor: pointer;
     transition: all 0.3s ease;
     margin-top: 10px;
