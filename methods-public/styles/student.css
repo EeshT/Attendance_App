@@ -125,8 +125,10 @@ h3 {
   
 }
 .course-code {
-    background: rgba(14, 84, 171, 1);
-    color: white;
+    background: rgb(243, 123, 63);
+    color: black;
+    font-size: 1rem;
+    font-weight: 600;
     border-radius: 10px;
     padding: 10px;
 }

@@ -209,7 +209,7 @@ app.post('/addSubject', requireLogin('professor'),async (req,res) => {
       const data = req.body
       const username = req.session.username
       await addNewSubject(data, username)
-      res.status(200).send('Subject registered successfully')
+      res.redirect('/professor')
   } catch(err){
     console.error('Add Subject Error:', err.message)
     res.status(400).send(err.message || 'There was a problem in registering the subject')
@@ -244,7 +244,7 @@ app.post('/editSubject', requireLogin('professor'), async (req, res) => {
     const data = req.body;
     const username = req.session.username;
     await updateSubjectDetails(data, username);
-    res.status(200).send('Subject updated successfully')
+    res.redirect('/professor')
   } catch (err) {
     console.error(err);
     res.status(400).send('Error updating subject');

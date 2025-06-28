@@ -12,7 +12,7 @@ async function getStudentPercentage() {
   const attendancePercentages = summary.map(item =>
     item.total === 0 ? 0 : Math.round((item.attended / item.total) * 100)
   );
-  const colors = attendancePercentages.map(p => p >= 80 ? 'green' : 'red');
+  const colors = attendancePercentages.map(p => p >= 80 ? '#5ab45a' : 'rgb(220, 70, 70)');
 
   if (myChart) myChart.destroy();
 
@@ -21,7 +21,7 @@ async function getStudentPercentage() {
     data: {
       labels: labels,
       datasets: [{
-        label: 'Above 80',
+        label: 'Attendance %',
         data: attendancePercentages,
         backgroundColor: colors,
         borderColor: 'black',
@@ -62,13 +62,13 @@ async function getStudentPercentage() {
           return [
             {
               text: 'Above 80%',
-              fillStyle: 'green',
+              fillStyle: '#5ab45a',
               strokeStyle: 'black',
               lineWidth: 1
             },
             {
               text: 'Below 80%',
-              fillStyle: 'red',
+              fillStyle: 'rgb(220, 70, 70)',
               strokeStyle: 'black',
               lineWidth: 1
             }
