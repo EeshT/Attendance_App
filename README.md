@@ -16,17 +16,25 @@ on the sides of students and professor. The Application uses following technolog
 | Fonts | <ul><li>Segoe UI</li><li>Tahoma</li><li>Geneva</li><li>Verdana</li><li>sans-serif</li></ul> |
 
 ### Features  :rocket:
-1. **User Analytics:** Both students and professors get useful insights about their subjects and sessions graphically.
-2. **Locked Session feature:** Limited session duration prevents entery of unauthorised requests of students that
-   may try to mark present but are not present in class.
-3. **Higher Control:** Professor has higher control over the incoming requests and can manage the enteries before
-   their submission.
-4. **Minimalistic Interface:** The frontend is uncluttered and provides straight access to direct features without having
-   to look for them.  
-   
+
+1. **User Analytics:** Both students and professors gain meaningful insights through visual analytics. Attendance records are presented in easy-to-understand chart, helping users track progress and identify subject where they may need attendence improvement.
+2. **Locked Session Feature:** Each session has a strictly limited duration, which prevents unauthorized or late entries. This ensures that only students who are physically present in class can mark their attendance, maintaining the integrity of the records.
+3. **Higher Control for Professors:** Professors have full control over incoming attendance requests. They can review, approve, or reject entries before final submission, giving them greater authority to manage their classes and reduce discrepancies.
+4. **Minimalistic Interface:** The application’s frontend is designed to be clean, intuitive, and clutter-free. Users can easily navigate through features without wasting time searching for options, making the overall experience smooth and efficient.
+5. **User Centeric Design:** Out of all the subjects running in the institution, a particular student only sees the labs, lectures and workshops relevent to his department and year.
 
 ### Gallery :rice_scene:
-![]()
+
+![](assets/main-page.png)
+![](assets/login.png)
+![](assets/student.png)
+
+### Follow Up 📝
+
+1. Inculsion of Admin Panel: Providing a way for institution to clean up and manipulate enteries to mitigate human errors and maintain database.
+2. Email Service: An *honor score* for each student can be maintained. Which decrements and keeps check for students who send unauthorised enteries. Sending warning
+emails to students provide useful way for keeping offenders in check.
+
 ### References :bookmark_tabs:
 
 - https://www.chartjs.org/docs/latest/
