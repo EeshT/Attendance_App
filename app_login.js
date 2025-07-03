@@ -3,7 +3,7 @@ import path from 'path';
 import session from 'express-session';
 import bcrypt from 'bcrypt';
 import nocache from 'nocache';
-import { logStudentDetails, logProfessorDetails, checkLoginDetails, getStudentInfo, addNewSubject, updateSubjectDetails, deleteSubjectAndMapping, getProfessorName, getStudentSubjectInfo, startAttendanceSession, getSessionStats, getActiveSessionForStudent, requestStudentAttendance, checkActiveSession, getAttendanceRequests, markIndividualAttendance, markAllAttendance, stopAttendanceSession, getStudentAttendanceSummary} from './database.js';
+import { logStudentDetails, logProfessorDetails, checkLoginDetails, getStudentInfo, addNewSubject, updateSubjectDetails, deleteSubjectAndMapping, getProfessorName, getStudentSubjectInfo, startAttendanceSession, getSessionStats, getActiveSessionForStudent, requestStudentAttendance, checkActiveSession, getAttendanceRequests, markIndividualAttendance, markAllAttendance, stopAttendanceSession, getStudentAttendanceSummary, getSessionsByDate, getPresentAbsentCount, getAbsentStudents, getLowAttendanceStudents} from './database.js';
 import { fileURLToPath } from 'url';
 import { dirname } from 'path';
 
@@ -101,7 +101,6 @@ app.get('/login', (req, res) => {
 
 app.post('/login', async (req, res) => {
   try {
-    console.log('Login request body:', req.body);
     const { username, password, userType } = req.body;
 
     if (!username || !password) {
@@ -125,8 +124,6 @@ app.post('/login', async (req, res) => {
       req.session.userId = user.user_id;
       req.session.userType = user.user_type;
       req.session.username = user.username; 
-      
-      console.log('Session created:', req.session);
       
       if (user.user_type === 'student') {
         res.json({ 
@@ -407,6 +404,51 @@ app.get('/student/attendance-summary-percentage', requireLogin('student'), async
   }
 });
 
+app.get('/api/sessions', async (req, res) => {
+    const { date } = req.query;
+    try {
+        const sessions = await getSessionsByDate(date);
+        res.json(sessions);
+    } catch (err) {
+        console.error('Error fetching sessions:', err);
+        res.status(500).json({ error: 'Server error' });
+    }
+});
+
+
+app.get('/api/attendance/presentAbsent', async (req, res) => {
+    const { sessionId } = req.query;
+    try {
+        const data = await getPresentAbsentCount(sessionId);
+        res.json(data);
+    } catch (err) {
+        console.error('Error fetching counts:', err);
+        res.status(500).json({ error: 'Server error' });
+    }
+});
+
+
+app.get('/api/attendance/absentNames', async (req, res) => {
+    const { sessionId } = req.query;
+    try {
+        const students = await getAbsentStudents(sessionId);
+        res.json(students);
+    } catch (err) {
+        console.error('Error fetching absent students:', err);
+        res.status(500).json({ error: 'Server error' });
+    }
+});
+
+
+app.get('/api/attendance/lowAttendance', async (req, res) => {
+    try {
+        const lowAttendees = await getLowAttendanceStudents();
+        res.json(lowAttendees);
+    } catch (err) {
+        console.error('Error fetching low attendance list:', err);
+        res.status(500).json({ error: 'Server error' });
+    }
+});
 
 app.listen(8000, () => {
   console.log('Server listening on http://localhost:8000');

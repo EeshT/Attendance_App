@@ -597,3 +597,57 @@ export async function getProfessorName(username){
   }
 
 }
+
+export async function getSessionsByDate(date) {
+    const [rows] = await pool.query(`
+        SELECT s.session_id, sub.subject_code, s.session_type 
+        FROM attendance_sessions s
+        JOIN professor_subjects ps ON s.mapping_id = ps.mapping_id
+        JOIN subjects sub ON ps.subject_id = sub.subject_id
+        WHERE s.session_date = ?
+    `, [date]);
+    return rows;
+}
+
+
+export async function getPresentAbsentCount(sessionId) {
+    const [[present]] = await pool.query(`
+        SELECT COUNT(*) as count 
+        FROM attendance_records 
+        WHERE session_id = ? AND attendance_status = 'present'
+    `, [sessionId]);
+
+    const [[absent]] = await pool.query(`
+        SELECT COUNT(*) as count 
+        FROM attendance_records 
+        WHERE session_id = ? AND attendance_status = 'absent'
+    `, [sessionId]);
+
+    return {
+        present: present.count,
+        absent: absent.count
+    };
+}
+
+export async function getAbsentStudents(sessionId) {
+    const [rows] = await pool.query(`
+        SELECT s.student_name 
+        FROM attendance_records ar
+        JOIN students s ON ar.student_id = s.student_id
+        WHERE ar.session_id = ? AND ar.attendance_status = 'absent'
+    `, [sessionId]);
+    return rows;
+}
+
+
+export async function getLowAttendanceStudents() {
+    const [rows] = await pool.query(`
+        SELECT s.student_name,
+               ROUND(100.0 * SUM(ar.attendance_status = 'present') / COUNT(*), 2) AS percentage
+        FROM attendance_records ar
+        JOIN students s ON ar.student_id = s.student_id
+        GROUP BY ar.student_id
+        HAVING percentage < 80
+    `);
+    return rows;
+}

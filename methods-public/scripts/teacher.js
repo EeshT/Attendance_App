@@ -23,6 +23,11 @@ document.addEventListener('click', (e) => {
       if (targetCard) {
         targetCard.classList.add('active');
       }
+      if (targetId === 'card3') {
+        console.log("Loading analytics on tab click");
+        loadLowAttendance();
+        loadSessionsForDate();
+      }
     }
   }
 });
@@ -425,4 +430,113 @@ logoutBtn.addEventListener('click',async () => {
       alert('Error logging out. Please try again.');
     }
 })
+
+// loading the attendance analytics
+document.addEventListener("DOMContentLoaded", () => {
+    const dateInput = document.getElementById("analytics-date");
+    const sessionDropdown = document.getElementById("session-dropdown");
+
+    const today = new Date().toISOString().split("T")[0];
+    dateInput.value = today;
+
+    dateInput.addEventListener("change", loadSessionsForDate);
+    sessionDropdown.addEventListener("change", loadAnalytics);
+
+    loadLowAttendance();
+});
+
+async function loadSessionsForDate() {
+    const date = document.getElementById("analytics-date").value;
+    const res = await fetch(`/api/sessions?date=${date}`);
+    const sessions = await res.json();
+    const dropdown = document.getElementById("session-dropdown");
+    dropdown.innerHTML = "";
+
+    sessions.forEach(session => {
+        const option = document.createElement("option");
+        option.value = session.session_id;
+        option.textContent = `${session.subject_code} (${session.session_type})`;
+        dropdown.appendChild(option);
+    });
+
+    if (sessions.length > 0) {
+        dropdown.value = sessions[0].session_id;
+        loadAnalytics(); // auto-load first session
+    }
+}
+
+async function loadAnalytics() {
+    const sessionId = document.getElementById("session-dropdown").value;
+    const presentRes = await fetch(`/api/attendance/presentAbsent?sessionId=${sessionId}`);
+    const summary = await presentRes.json();
+
+    document.getElementById("present-count").innerText = summary.present;
+    document.getElementById("absent-count").innerText = summary.absent;
+
+    renderChart(summary.present, summary.absent);
+
+    const absentRes = await fetch(`/api/attendance/absentNames?sessionId=${sessionId}`);
+    const absentees = await absentRes.json();
+    const tbody = document.querySelector("#absent-students-table tbody");
+    tbody.innerHTML = "";
+
+    absentees.forEach(st => {
+        const row = document.createElement("tr");
+        const nameCell = document.createElement("td");
+        nameCell.innerText = st.student_name || st.name;
+        row.appendChild(nameCell);
+        tbody.appendChild(row);
+    });
+}
+
+async function loadLowAttendance() {
+   try {
+        const res = await fetch('/api/attendance/lowAttendance');
+        const students = await res.json();
+
+        const tbody = document.querySelector("#low-attendance-table tbody");
+        if (!tbody) {
+            console.error("Missing tbody in low-attendance-table");
+            return;
+        }
+
+        tbody.innerHTML = "";
+
+        students.forEach(st => {
+            const row = document.createElement("tr");
+
+            const nameCell = document.createElement("td");
+            nameCell.innerText = st.student_name || st.name || "N/A";
+
+            const percentCell = document.createElement("td");
+            const percentage = parseFloat(st.percentage);
+            percentCell.innerText = isNaN(percentage) ? "0%" : percentage.toFixed(2) + "%";
+
+
+            row.appendChild(nameCell);
+            row.appendChild(percentCell);
+            tbody.appendChild(row);
+        });
+    } catch (err) {
+        console.error("Error loading low attendance:", err);
+    }
+}
+
+let summaryChart;
+function renderChart(present, absent) {
+    const ctx = document.getElementById("summaryChart").getContext("2d");
+    if (summaryChart) summaryChart.destroy(); // clear previous
+
+    summaryChart = new Chart(ctx, {
+        type: 'bar',
+        data: {
+            labels: ['Present', 'Absent'],
+            datasets: [{
+                label: 'Count',
+                data: [present, absent],
+                backgroundColor: ['#4CAF50', '#F44336']
+            }]
+        }
+    });
+}
 

@@ -337,3 +337,48 @@ button {
     padding: 0.75rem;
   }
 }
+
+.analytics{
+    text-align: center;
+    font-size: 2rem;
+    font-weight: 800;
+    margin-bottom: 2rem;
+}
+table {
+  width: 100%;
+  border-collapse: collapse;
+  margin-top: 10px;
+}
+
+th, td {
+  border: 1px solid #ccc;
+  padding: 8px;
+  text-align: left;
+}
+
+.analytics-wrapper {
+  max-width: 800px;
+  margin: 0 auto;
+  padding: 1rem 2rem;
+}
+
+.summary-stats {
+  text-align: center;
+  margin: 2rem 0;
+}
+
+.table-wrapper {
+  background: white;
+  padding: 1rem;
+  border-radius: 12px;
+  margin-bottom: 2rem;
+  box-shadow: 0 4px 10px rgba(0, 0, 0, 0.05);
+  overflow-x: auto;
+}
+
+#analytics-date,
+#session-dropdown {
+  display: block;
+  width: 100%;
+  margin-bottom: 1.5rem;
+}
