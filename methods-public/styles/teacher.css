@@ -382,3 +382,18 @@ th, td {
   width: 100%;
   margin-bottom: 1.5rem;
 }
+
+.footer-content p {
+    text-align: center;
+    margin: 8px 0;
+    color: black;
+    font-size: 14px;
+    font-weight: 700; /* Make text bold */
+}
+
+@media (max-width: 480px) {
+    .footer-card {
+        padding: 30px 20px;
+        margin: 20px 10px;
+    }
+}
