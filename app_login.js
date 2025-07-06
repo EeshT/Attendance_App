@@ -63,33 +63,6 @@ app.post('/register',async (req,res) => {
   
 })
 
-/* app.post('/login',async (req,res) => {
-  try {
-    console.log(req.body)
-    const { username, password } = req.body;
-
-    const user = await checkLoginDetails(username, password)
-
-    if (user && await bcrypt.compare(password, user.password_hash)) {
-      req.session.userId = user.user_id;
-      req.session.userType = user.user_type;
-      req.session.username = user.username; 
-      console.log(req.session.userType)
-      if (user.user_type === 'student') {
-        return res.redirect('/student');
-      } else if (user.user_type === 'professor') {
-        return res.redirect('/professor');
-      } else {
-        return res.status(400).send('Unknown user type');
-      }
-    } else {
-      res.status(401).send('Invalid credentials');
-    }
-  } catch (err) {
-    console.error(err);
-    res.status(500).send('Error in loging')
-  }
-}) */
 
 app.get('/login', (req, res) => {
   if (req.session.userId) {
@@ -450,7 +423,7 @@ app.get('/api/attendance/lowAttendance', async (req, res) => {
     }
 });
 
-app.listen(8000, () => {
-  console.log('Server listening on http://localhost:8000');
+app.listen(3000, () => {
+  console.log('Server listening on http://localhost:3000');
 });
 
