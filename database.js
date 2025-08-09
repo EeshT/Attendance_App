@@ -417,7 +417,7 @@ export async function getAttendanceRequests(sessionId) {
 export async function getSessionStats(sessionId) {
   try {
     const [[{ total }]] = await pool.query(
-      `SELECT COUNT(*) AS total FROM attendance_requests WHERE session_id = ?`,
+      `SELECT COUNT(*) AS total FROM attendance_requests WHERE session_id = ? AND status = 'pending'`,
       [sessionId]
     );
 
