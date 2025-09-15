@@ -3,21 +3,35 @@ import path from 'path';
 import session from 'express-session';
 import bcrypt from 'bcrypt';
 import nocache from 'nocache';
+import mysqlSession from 'express-mysql-session';
 import { logStudentDetails, logProfessorDetails, checkLoginDetails, getStudentInfo, addNewSubject, updateSubjectDetails, deleteSubjectAndMapping, getProfessorName, getStudentSubjectInfo, startAttendanceSession, getSessionStats, getActiveSessionForStudent, requestStudentAttendance, checkActiveSession, getAttendanceRequests, markIndividualAttendance, markAllAttendance, stopAttendanceSession, getStudentAttendanceSummary, getSessionsByDate, getPresentAbsentCount, getAbsentStudents, getLowAttendanceStudents} from './database.js';
 import { fileURLToPath } from 'url';
 import { dirname } from 'path';
 
+const MySQLStore = mysqlSession(session);
+
+const sessionStore = new MySQLStore({
+  host: process.env.MYSQL_HOST,
+  user: process.env.MYSQL_USER,
+  password: process.env.MYSQL_PASSWORD,
+  database: process.env.MYSQL_DATABASE,
+  clearExpired: true,
+  checkExpirationInterval: 900000, // clean up every 15 minutes
+  expiration: 30 * 24 * 60 * 60 * 1000 
+});
 
 const app = express();
 app.use(session({
   secret: process.env.SESSION_SECRET || 'your-secret-key',
   resave: false,
   saveUninitialized: false,
+  store: sessionStore,
+  rolling: true,
   cookie: {
-    maxAge: 24 * 60 * 60 * 1000,  // 1 day
-    secure: process.env.NODE_ENV === 'production', // HTTPS in production
+    maxAge: 30 * 24 * 60 * 60 * 1000,  // 30 day
+    secure: false,  // HTTPS in production
     httpOnly: true,
-    sameSite: 'strict'
+    sameSite: 'lax'
   }
 }));
 app.use(nocache());
